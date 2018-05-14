@@ -60,8 +60,25 @@ int PoseTracker::processLighthouse() {
 
 }
 
+
 /**
- * TODO: see header file for documentation
+ * Use the functions in PoseMath.h to get from clockTicks, to a new
+ * position and quaternion estimate, in the base station frame, where
+ * y is the normal of the top face of the base station, z points to the back
+ * You should not do any math here; use the functions in PoseMath.h.
+ *
+ * You will need to access the following fields defined in this class:
+ *  - clockTicks
+ *  - position2D
+ *  - positionRef
+ *  - position
+ *  - quaternionHm
+ *
+ * The position and quaternionHm variables should be updated to the
+ * new estimate.
+ *
+ * @returns  0:if any errors occur (eg failed matrix inversion),
+ *           1: if successful.
  */
 int PoseTracker::updatePose() {
 
@@ -80,10 +97,16 @@ int PoseTracker::updatePose() {
   //
   // return 0 if errors occur, return 1 if successful
   
+  double A_matrix[8][8];
+  double H_vector[8];
+  double R_matrix[3][3];
+  
+  convertTicksTo2DPositions(clockTicks, position2D);
+  formA(position2D, positionRef, A_matrix);
+  if(!solveForH(A_matrix, position2D, H_vector)) return 0;
+  getRtFromH(H_vector, R_matrix, position);
+  
 
-
-
-
-  return 0;
+  return 1;
 
 }

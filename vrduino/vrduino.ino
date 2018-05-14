@@ -12,7 +12,7 @@
 double alphaImuFilter = 0.99;
 
 //get simulated lighthouse timings (to test without physical lighthouse)
-bool simulateLighthouse = false;
+bool simulateLighthouse = true;
 
 //if test is true, then run tests in TestPose.cpp and exit
 bool test = false;
