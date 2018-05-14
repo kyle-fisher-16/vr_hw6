@@ -51,7 +51,7 @@ void formA(double pos2D[8], double posRef[8], double Aout[8][8]) {
 
   // i keeps track of the photodiode # (0, 1, 2, 3)
   unsigned int i = 0;
-  double x_i, y_i, xn_i, yn_i; \
+  double x_i, y_i, xn_i, yn_i;
 
   // row keeps track of which row we are writing. 
   for (unsigned int row = 0; row < 8; row += 2) {
