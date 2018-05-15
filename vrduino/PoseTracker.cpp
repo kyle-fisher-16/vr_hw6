@@ -100,11 +100,21 @@ int PoseTracker::updatePose() {
   double A_matrix[8][8];
   double H_vector[8];
   double R_matrix[3][3];
-  
+
+  // get normalized coordinates from clock ticks
   convertTicksTo2DPositions(clockTicks, position2D);
+  
+  // form linear matrix A for homography
   formA(position2D, positionRef, A_matrix);
+  
+  // solve for H
   if(!solveForH(A_matrix, position2D, H_vector)) return 0;
+  //else{solveForH(A_matrix, position2D, H_vector);}
+  
+  // get the updated rotation matrix from H
   getRtFromH(H_vector, R_matrix, position);
+
+  // calcuate quaternion from rotation matrix
   quaternionHm = getQuaternionFromRotationMatrix(R_matrix);
 
   return 1;
