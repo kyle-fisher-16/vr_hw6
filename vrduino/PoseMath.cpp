@@ -51,7 +51,7 @@ void formA(double pos2D[8], double posRef[8], double Aout[8][8]) {
 
   // i keeps track of the photodiode # (0, 1, 2, 3)
   unsigned int i = 0;
-  double x_i, y_i, xn_i, yn_i; \
+  double x_i, y_i, xn_i, yn_i; //photodiode postions and normalized positions
 
   // row keeps track of which row we are writing. 
   for (unsigned int row = 0; row < 8; row += 2) {
@@ -89,6 +89,7 @@ void formA(double pos2D[8], double posRef[8], double Aout[8][8]) {
 bool solveForH(double A[8][8], double b[8], double hOut[8]) {
   //use Matrix Math library for matrix operations
   if(!Matrix.Invert((double*)A, 8)) return false;
+  //else{Matrix.Invert((double*)A, 8);}
 
   // treat b as a 8x1 matrix
   double b_mat[8][1];
@@ -126,10 +127,23 @@ void getRtFromH(double h[8], double ROut[3][3], double pos3DOut[3]) {
   
 
   // column 2
-  double col2_norm = l2norm(h[1], h[4], h[7]);
+  /*double col2_norm = l2norm(h[1], h[4], h[7]);
   ROut[0][1] = h[1] / col2_norm;
   ROut[1][1] = h[4] / col2_norm;
-  ROut[2][1] = -h[7] / col2_norm;
+  ROut[2][1] = -h[7] / col2_norm;*/
+  // need to enforce orthogonality with column 1
+  double r11 = ROut[0][0];
+  double r21 = ROut[1][0];
+  double r31 = ROut[2][0];
+  
+  ROut[0][1] = h[1] - (r11*(r11*h[1] + r21*h[4] - r31*h[7]));
+  ROut[1][1] = h[4] - (r21*(r11*h[1] + r21*h[4] - r31*h[7]));
+  ROut[2][1] = h[7] - (r31*(r11*h[1] + r21*h[4] - r31*h[7]));
+  //normalize!
+  double col2_norm = l2norm(ROut[0][1], ROut[1][1], ROut[2][1]);
+  ROut[0][1] = ROut[0][1] / col2_norm;
+  ROut[1][1] = ROut[1][1] / col2_norm;
+  ROut[2][1] = ROut[2][1] / col2_norm;
 
   // column 3 (using cross product)
   ROut[0][2] = ROut[1][0] * ROut[2][1] - ROut[2][0] * ROut[1][1];
