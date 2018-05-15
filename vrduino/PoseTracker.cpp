@@ -105,7 +105,7 @@ int PoseTracker::updatePose() {
   formA(position2D, positionRef, A_matrix);
   if(!solveForH(A_matrix, position2D, H_vector)) return 0;
   getRtFromH(H_vector, R_matrix, position);
-  
+  quaternionHm = getQuaternionFromRotationMatrix(R_matrix);
 
   return 1;
 

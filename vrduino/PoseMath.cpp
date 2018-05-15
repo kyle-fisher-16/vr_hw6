@@ -149,7 +149,11 @@ void getRtFromH(double h[8], double ROut[3][3], double pos3DOut[3]) {
  * TODO: see header file for documentation
  */
 Quaternion getQuaternionFromRotationMatrix(double R[3][3]) {
+  double qw = sqrt(1 + R[0][0] + R[1][1] + R[2][2]) / 2;
+  double qx = (R[2][1] - R[1][2]) / (4.0 * qw);
+  double qy = (R[0][2] - R[2][0]) / (4.0 * qw);
+  double qz = (R[1][0] - R[0][1]) / (4.0 * qw);
 
-  return Quaternion();
+  return Quaternion(qw, qx, qy, qz).normalize();
 
 }
